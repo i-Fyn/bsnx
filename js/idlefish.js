@@ -26,6 +26,7 @@ $.messages = [];
 
 async function getCk() {
     if ($request && $request.method != 'OPTIONS') {
+	const head = ObjectKeys2LowerCase($request.headers);
         const cookie = head['cookie'];
         if (cookie) {
             const ckVal = cookie;
