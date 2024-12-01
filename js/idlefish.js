@@ -8,7 +8,7 @@
 
 ====================================
 [loon插件]
-
+https://raw.githubusercontent.com/i-Fyn/bsnx/main/plugin/idlefish.plugin
 
 ====================================
 # pushplusToken PUSH_PLUS_TOKEN=**********
