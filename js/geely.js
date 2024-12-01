@@ -36,7 +36,7 @@ async function getCk() {
         const token = head['token'];
         const devicesn = head['devicesn'];
         if (token && devicesn) {
-            const ckVal = phone + "@" + token + "@" + devicesn;
+            const ckVal = url + "@" + token + "@" + devicesn;
             $.setdata(ckVal, "temp_"+_key);
             $.msg($.name, '获取ck成功🎉', ckVal);
         } else {
