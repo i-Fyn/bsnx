@@ -30,13 +30,13 @@ $.messages = [];
 
 async function getCk() {
     if ($request && $request.method != 'OPTIONS') {
-        const url = $request.url;
+        //const url = $request.url;
       //  const phone = url.match(/phone=(\d{11})/)?.[1];
         const head = ObjectKeys2LowerCase($request.headers);
         const token = head['token'];
         const devicesn = head['devicesn'];
         if (token && devicesn) {
-            const ckVal = url + "@" + token + "@" + devicesn;
+            const ckVal = $.toStr(token + "@" + devicesn);
             $.setdata(ckVal, "temp_"+_key);
             $.msg($.name, '获取ck成功🎉', ckVal);
         } else {
