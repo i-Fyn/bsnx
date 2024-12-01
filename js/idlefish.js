@@ -28,7 +28,7 @@ async function getCk() {
     if ($request && $request.method != 'OPTIONS') {
         const cookie = head['cookie'];
       
-        if (cookie?.includes("_tb_token_") {
+        if (cookie?.includes("_tb_token_")) {
             const ckVal = cookie;
             $.setdata(ckVal, _key); // 保存更新后的数据
             $.msg($.name, '获取ck成功🎉', ckVal);
