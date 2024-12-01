@@ -22,7 +22,7 @@ const tag="吉利汽车";
 const taskName="签到";
 const $ = new Env(tag+taskName);
 const _key = 'geely_val';
-const CK_Val = getEnv(_key);
+const CK_Val = getEnv(_key).trim();
 //$.log($.toStr(CK_Val))
 //$.log($.toObj(CK_Val))
 $.is_debug ='true--';
@@ -53,8 +53,7 @@ async function main() {
     $.log(`最新版本号：${$.appversion}`);
     let ckArr = await getCks(CK_Val);
     for (let index = 0; index < ckArr.length; index++) {
-    $.log(ckArr[index]);
-		const [mobile,token, devicesn ]= ckArr[index].trim().split("@");
+	const [mobile,token, devicesn ]= ckArr[index].trim().split("@");
         if (!mobile || !token || !devicesn) {
             $.msg($.name, '', '❌❌App升级，请重新更新ck🎉🎉');
         }else{
