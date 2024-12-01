@@ -1,5 +1,5 @@
-#!name=geelyDailyTask
-#!desc=geelyDailyTask
+#!name=GEELY每日签到任务
+#!desc=定时任务及Token获取
 #!author= iFyn
 #!homepage= https://github.com/i-Fyn/bsnx
 #!icon=https://raw.githubusercontent.com/i-Fyn/bsnx/main/icon/IMG_4048.webp
