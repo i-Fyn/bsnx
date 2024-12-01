@@ -55,7 +55,7 @@ async function main() {
     for (let index = 0; index < ckArr.length; index++) {
 	const [mobile,token, devicesn ]= ckArr[index].trim().split("@");
         if (!mobile || !token || !devicesn) {
-            $.msg($.name, '', '❌❌App升级，请重新更新ck🎉🎉');
+            $.msg($.name, ckArr[index], '❌❌App升级，请重新更新ck🎉🎉');
         }else{
 	$.mobile = mobile;
         $.token = token;
