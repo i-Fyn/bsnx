@@ -38,28 +38,7 @@ async function getCk() {
         
         if (token && devicesn && phone) {
             const ckVal = phone + "@" + token + "@" + devicesn + "\n";
-            const existingData = $.getdata(_key) || ""; // 获取已有数据
-            let updatedData = "";
-
-            // 将已有数据按行分割，逐行检查
-            const lines = existingData.split("\n").filter(line => line.trim() !== "");
-            let found = false;
-
-            for (const line of lines) {
-                if (line.startsWith(phone + "@")) {
-                    updatedData += ckVal; // 替换对应行
-                    found = true;
-                } else {
-                    updatedData += line + "\n"; // 保留原有行
-                }
-            }
-
-            // 如果未找到匹配项，直接追加新值
-            if (!found) {
-                updatedData += ckVal;
-            }
-
-            $.setdata(updatedData, _key); // 保存更新后的数据
+            $.setdata(ckVal, _key); // 保存更新后的数据
             $.msg($.name, '获取ck成功🎉', ckVal);
         } else {
             $.msg($.name, '', '❌获取ck失败');
@@ -69,7 +48,7 @@ async function getCk() {
 
 async function main() {
     if (CK_Val) {
-		$.appversion = $.toObj((await $.http.get(`https://itunes.apple.com/cn/lookup?id=1518762715`))?.body)?.results[0]?.version;
+    $.appversion = $.toObj((await $.http.get(`https://itunes.apple.com/cn/lookup?id=1518762715`))?.body)?.results[0]?.version;
     $.appversion = $.appversion ? $.appversion : "3.25.0";
     $.log(`最新版本号：${$.appversion}`);
     let ckArr = await getCks(CK_Val);
@@ -79,10 +58,11 @@ async function main() {
         if (!mobile || !token || !devicesn) {
             $.msg($.name, '', '❌❌App升级，请重新更新ck🎉🎉');
         }else{
-			  $.mobile = mobile;
+	$.mobile = mobile;
         $.token = token;
         $.devicesn = devicesn;
-				}
+        await getMyCenterCounts();
+	}
     
 }
 	}else {
@@ -139,7 +119,6 @@ async function signIn() {
     let {code, data, message} = await httpRequest(rest);
     _msg += `签到：${message}`;//{"code":"fail","message":"您已签到,请勿重复操作!"}
     pushMsg(_msg);
-    return code
 }
 
 // 累计签到
@@ -160,7 +139,7 @@ async function getSignMsg() {
 }
 //能力体
 async function summary() {
-    url = `https://app.geely.com/api/v1/growthSystem/energyBody/summary`;
+    url = `https://app.geely.com/api/v1/point/available`;
     headers = {
         appVersion: $.appversion,
         deviceSN: $.devicesn,
@@ -171,12 +150,36 @@ async function summary() {
     const rest = {url, headers};
     let {code, data, message} = await httpRequest(rest);
     let _msg;
-    _msg = (code == 'success') ? `能量体：${parseFloat(data?.total)}` : '';//parseFloat('2.00')
-    //{"code":"success","data":{"total":"2.00"},"message":"API调用成功"}
+    _msg = (code == 'success') ? `积分：${parseFloat(data?.availablePoint)}` : '';//parseFloat('2.00')
     pushMsg(_msg);
 
 }
 
+// 是否签到
+async function getMyCenterCounts() {
+    try{
+    url = `https://app.geely.com/my/getMyCenterCounts`;
+    headers = {
+        appVersion: $.appversion,
+        deviceSN: $.devicesn,
+        token: $.token ,
+        platform: "iOS",
+        "User-Agent": `GLMainProject/${$.appversion} (iPhone; iOS 17.6.1; Scale/2.00)`,
+    };
+    const rest = {url, headers}
+    let {code, data, message} = await httpRequest(rest);
+    if (code == 'success') {
+    if (data?.isSign == false){
+        await signIn();
+    }else{
+        pushMsg(`已签到`);
+    }
+    await getSignMsg();
+    await summary();
+    }
+    }catch(e){
+    }
+}
 async function httpRequest(options) {
     try {
         options = options.url ? options : { url: options };
