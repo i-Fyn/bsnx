@@ -206,7 +206,7 @@ function pushMsg(msg) {
 
 
 
-async function pushplus(message) {
+async function pushplus(msg) {
     var pushplusToken = getPushPlusToken();
     if(!pushplusToken){
         $.log(`推送服务未启用，请先设置环境变量：PUSH_PLUS_TOKEN`);
@@ -219,7 +219,7 @@ async function pushplus(message) {
     body =  {
         "token": pushplusToken,
         "title": tag,
-        "content":message,
+        "content":msg,
         "temple": "html"
     };
     const rest = {url,body ,headers};
