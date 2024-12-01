@@ -13,9 +13,9 @@
 
 [Script]
 # geelyDailyTask
-cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=geelyDailyTask
+cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=签到任务
 
-http-request ^https?:\/\/app\.geely\.com\/gauth\/api\/owner\/dcs\/getCarList\? script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=APP抓包
+http-request ^https?:\/\/app\.geely\.com\/gauth\/api\/owner\/dcs\/getCarList\? script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=获取Token
 
 [MITM]
 hostname = app.geely.com
