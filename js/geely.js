@@ -35,9 +35,31 @@ async function getCk() {
         const head = ObjectKeys2LowerCase($request.headers);
         const token = head['token'];
         const devicesn = head['devicesn'];
-        if (token && devicesn) {
-            const ckVal = phone + "@" + token + "@" + devicesn;
-            $.setdata(ckVal, "temp_"+_key);
+        
+        if (token && devicesn && phone) {
+            const ckVal = phone + "@" + token + "@" + devicesn + "\n";
+            const existingData = $.getdata("temp_" + _key) || ""; // 获取已有数据
+            let updatedData = "";
+
+            // 将已有数据按行分割，逐行检查
+            const lines = existingData.split("\n").filter(line => line.trim() !== "");
+            let found = false;
+
+            for (const line of lines) {
+                if (line.startsWith(phone + "@")) {
+                    updatedData += ckVal; // 替换对应行
+                    found = true;
+                } else {
+                    updatedData += line + "\n"; // 保留原有行
+                }
+            }
+
+            // 如果未找到匹配项，直接追加新值
+            if (!found) {
+                updatedData += ckVal;
+            }
+
+            $.setdata(updatedData, "temp_" + _key); // 保存更新后的数据
             $.msg($.name, '获取ck成功🎉', ckVal);
         } else {
             $.msg($.name, '', '❌获取ck失败');
