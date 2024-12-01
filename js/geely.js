@@ -38,7 +38,7 @@ async function getCk() {
         
         if (token && devicesn && phone) {
             const ckVal = phone + "@" + token + "@" + devicesn + "\n";
-            const existingData = $.getdata("temp_" + _key) || ""; // 获取已有数据
+            const existingData = $.getdata(_key) || ""; // 获取已有数据
             let updatedData = "";
 
             // 将已有数据按行分割，逐行检查
@@ -59,7 +59,7 @@ async function getCk() {
                 updatedData += ckVal;
             }
 
-            $.setdata(updatedData, "temp_" + _key); // 保存更新后的数据
+            $.setdata(updatedData, _key); // 保存更新后的数据
             $.msg($.name, '获取ck成功🎉', ckVal);
         } else {
             $.msg($.name, '', '❌获取ck失败');
