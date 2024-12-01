@@ -7,7 +7,7 @@
 
 ====================================
 [loon插件]
-http-request ^https?:\/\/app\.geely\.com\/api\/v1\/growthSystem\/energyBody\/summary script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=APP抓包
+http-request ^https?:\/\/app\.geely\.com\/gauth\/api\/owner\/dcs\/getCarList\? script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=APP抓包
 
 [Script]
 30 7 * * * https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag= 吉利汽车签到
