@@ -59,7 +59,6 @@ async function main() {
         }else{
         var l = `========= [${mobile}]=========`;
 	pushMsg(l);
-        $.log(l);
 	$.mobile = mobile;
         $.token = token;
         $.devicesn = devicesn;
