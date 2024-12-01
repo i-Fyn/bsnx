@@ -22,7 +22,7 @@ const tag="吉利汽车";
 const taskName="签到";
 const $ = new Env(tag+taskName);
 const _key = 'geely_val';
-const CK_Val = getEnv(_key).trim();
+const CK_Val = getEnv(_key)?.trim();
 //$.log($.toStr(CK_Val))
 //$.log($.toObj(CK_Val))
 $.is_debug ='true--';
