@@ -2,7 +2,7 @@
 #!desc=定时任务及Cookie获取
 #!author= iFyn(bsnx)
 #!homepage= https://github.com/i-Fyn/bsnx
-#!icon=https://raw.githubusercontent.com/i-Fyn/bsnx/main/icon/IMG_4048.webp
+#!icon=https://raw.githubusercontent.com/i-Fyn/bsnx/main/icon/idlefish_ic_launcher.png
 #!category= MK
 # 现将获取cookie与定时任务合并为一个模块
 # 保持开启,如检测到cookie变更会自动更新,解决cookie经常过期的问题(cookie仍有效不提醒更新)
@@ -13,9 +13,9 @@
 
 [Script]
 
-cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=签到任务
+cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/idlefish.js, tag=领取经验球
 
-http-request ^https?:\/\/app\.geely\.com\/gauth\/api\/owner\/dcs\/getCarList\? script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=获取Token
+http-request ^https?:\/\/h5\.m\.goofish\.com\/wow\/moyu\/moyu-project\/fish-er-home\/pages\/.*(\?.*)?$/ script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/idlefish.js, tag=获取Cookie
 
 [MITM]
 hostname = h5.m.goofish.com
