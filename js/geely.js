@@ -57,6 +57,9 @@ async function main() {
         if (!mobile || !token || !devicesn) {
             $.msg($.name, ckArr[index], '❌❌App升级，请重新更新ck🎉🎉');
         }else{
+        var l = `========= [${mobile}]=========`;
+	pushMsg(l);
+        $.log(l);
 	$.mobile = mobile;
         $.token = token;
         $.devicesn = devicesn;
