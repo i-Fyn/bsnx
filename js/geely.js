@@ -3,7 +3,7 @@
 测试loon,nodejs，其他自测
 签到风控升级处理，请重新获取cookie,青龙也增加了一个参数
 
-获取Cookie方法 ，Loon安装插件，进入吉利APP，最后进入数据持久化，读取指定数据 temp_geely_val ，复制到导入数据geely_val
+获取Cookie方法 ，Loon安装插件，进入吉利APP，最后进入数据持久化，读取指定数据 geely_val
 
 ====================================
 [loon插件]
