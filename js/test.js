@@ -11,21 +11,17 @@ $.is_debug ='true--';
 $.messages = [];
 
 async function getCk() {
-	if($response || $request){
-	console.log($response)
-	console.log($request)
-	}
+    if ($response && $request.method != 'OPTIONS') {
 	const response = $response.body;
         if (response) {
             const ckVal = response;
 		if(typeof(ckVal) == "object"){
 		$.log("object")
                 $.log($.toStr(ckVal))
-		
 		}else{
                 try{
 		$.log("string: "+ ckVal)
-                $.log($.toStr(ckVal))
+                $.log($.toObj(ckVal))
 		}catch(e){}
 		}
             //$.setdata(ckVal, _key); // 保存更新后的数据
@@ -33,6 +29,7 @@ async function getCk() {
         } else {
             $.msg($.name, '', '❌获取ck失败');
         }
+    }
 }
 
 async function httpRequest(options) {
@@ -65,7 +62,9 @@ async function httpRequest(options) {
 
 // 脚本执行入口
 !(async () => {
-    getCk();
+    if (typeof $request !== `undefined`) {
+        getCk();
+    }
 })().catch((e) => $.messages.push(e.message || e) && $.logErr(e))
     .finally(async () => {
        // await sendMsg($.messages.join('\n').trimStart().trimEnd());// 推送通知
