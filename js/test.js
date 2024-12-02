@@ -3,7 +3,7 @@
 const tag="测试";
 const taskName="测试";
 const $ = new Env(tag+taskName);
-const _key = 'idlefish_val';
+const _key = 'test_val';
 const CK_Val = getEnv(_key)?.trim();
 //$.log($.toStr(CK_Val))
 //$.log($.toObj(CK_Val))
