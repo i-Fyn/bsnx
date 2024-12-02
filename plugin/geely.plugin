@@ -10,8 +10,8 @@
 #!date=2024-12-02 00:00:00
 
 [Argument]
-pushplusStatus = switch,false,tag=启用pushplus通知,desc=是否启用通知
-pushplusToken = input,"",tag=PUSH_PLUS_TOKEN,desc=填写需要通知的PUSH_PLUS_TOKEN
+pushplusStatus = switch,false,tag=PUSHPLUS,desc=是否启用通知
+pushplusToken = input,"default",tag=PUSH_PLUS_TOKEN,desc=填写需要通知的PUSH_PLUS_TOKEN
 
 
 [Script]
