@@ -114,7 +114,7 @@ async function refresh_token() {
         await writeValToLocal($.mobile + "@" + $.token + "@" + $.refreshToken + "@" + $.txCookie + "@" + $.devicesn, $.mobile);
         await getMyCenterCounts();
     } else {
-        $.msg($.name, '', 'token刷新失败❌' + $.toStr(data));
+        pushMsg(`token刷新失败：${message}`);
     }
 }
 
