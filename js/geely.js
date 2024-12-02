@@ -80,12 +80,8 @@ async function main() {
         }else{
     var l = `========= [${mobile}]=========`;
 	pushMsg(l);
-    var o = await readValFromLocal(mobile);
-    $.log(typeof(o));
-    $.log(o);
     var d = await readValFromLocal(mobile);
-    $.log("lalala:"+d)
-    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =(await readValFromLocal(mobile))?.trim().split("@") || ckArr[index].trim().split("@");
+    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] = d?.trim().split("@") || ckArr[index].trim().split("@");
     $.log(`读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
    // if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
     //    await refresh_token();
