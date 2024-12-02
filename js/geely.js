@@ -80,11 +80,13 @@ async function main() {
         }else{
     var l = `========= [${mobile}]=========`;
 	pushMsg(l);
+    var o = await readValFromLocal(mobile)
+    $.log(o)
     [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =await readValFromLocal(mobile) || ckArr[index].trim();
     $.log(`读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
-    if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
-        await refresh_token();
-	}
+   // if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
+    //    await refresh_token();
+//	}
 }
 }
 	}else {
