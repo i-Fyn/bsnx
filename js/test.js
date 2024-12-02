@@ -15,8 +15,18 @@ async function getCk() {
 	const response = $response.body;
         if (response) {
             const ckVal = response;
-            $.setdata(ckVal, _key); // 保存更新后的数据
-            $.msg($.name, '获取ck成功🎉', ckVal);
+		if(typeof(ckVal) == "object"){
+		$.log("object")
+                $.log($.toStr(ckVal))
+		
+		}else{
+                try{
+		$.log("string: "+ ckVal)
+                $.log($.toStr(ckVal))
+		}catch(){}
+		}
+            //$.setdata(ckVal, _key); // 保存更新后的数据
+            //$.msg($.name, '获取ck成功🎉', ckVal);
         } else {
             $.msg($.name, '', '❌获取ck失败');
         }
