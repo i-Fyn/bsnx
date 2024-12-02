@@ -1,21 +1,7 @@
 
-/*
-闲鱼领取经验:此脚本纯属开玩笑，需要解密阿里系列：x-sign
-测试loon,nodejs，其他自测
-签到风控升级处理，请重新获取cookie,青龙也增加了一个参数
 
-获取Cookie方法 ，Loon安装插件，进入吉利APP，最后进入数据持久化，读取指定数据 idlefish_val
-
-====================================
-[loon插件]
-https://raw.githubusercontent.com/i-Fyn/bsnx/main/plugin/idlefish.plugin
-
-====================================
-# pushplusToken PUSH_PLUS_TOKEN=**********
-# 青龙环境变量  idlefish_val=cookie
- */
-const tag="闲鱼";
-const taskName="领取经验";
+const tag="测试";
+const taskName="测试";
 const $ = new Env(tag+taskName);
 const _key = 'idlefish_val';
 const CK_Val = getEnv(_key)?.trim();
@@ -25,11 +11,10 @@ $.is_debug ='true--';
 $.messages = [];
 
 async function getCk() {
-    if ($request && $request.method != 'OPTIONS') {
-	const head = ObjectKeys2LowerCase($request.headers);
-        const cookie = head['cookie'];
-        if (cookie) {
-            const ckVal = cookie;
+    if ($response && $request.method != 'OPTIONS') {
+	const response = $response.body;
+        if (response) {
+            const ckVal = response;
             $.setdata(ckVal, _key); // 保存更新后的数据
             $.msg($.name, '获取ck成功🎉', ckVal);
         } else {
@@ -38,43 +23,6 @@ async function getCk() {
     }
 }
 
-async function main() {
-    if (CK_Val) {
-    let ckArr = await getCks(CK_Val);
-    for (let index = 0; index < ckArr.length; index++) {
-	  const cookie = ckArr[index].trim();
-        if (cookie) {
-             $.cookie = cookie;
-            await autoFetchExp();
-        }
-}
-	}else {
-        $.msg($.name, '', '❌请先获取ck🎉');
-    }
-}
-
-// 领取经验球
-async function autoFetchExp() {
-    try{
-    url = `https://h5.m.goofish.com/wow/moyu/moyu-project/fish-er-home/pages/home?autoFetchExp=true&spm=a2170.7905589.userlevel.1`;
-    headers = {
-    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 AliApp(FM/7.18.50) WindVane/8.7.2 iPhone17,2 1290x2796 WK',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Sec-Fetch-Site': 'none',
-    'f-pTraceId': 'WVNet_WV_1-1-1',
-    'If-None-Match': 'W/"d8c-EfjGsWYMyIlLbIA66EAtzEjB1xg"',
-    'Sec-Fetch-Mode': 'navigate',
-    'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
-    'f-refer': 'wv_h5',
-    'Sec-Fetch-Dest': 'document',
-    'Cookie': $.cookie
-  };
-    const rest = {url, headers}
-    let res = await httpRequest(rest);
-    pushMsg("领取经验球成功");
-    }catch(e){
-    }
-}
 async function httpRequest(options) {
     try {
         options = options.url ? options : { url: options };
@@ -107,14 +55,10 @@ async function httpRequest(options) {
 !(async () => {
     if (typeof $request !== `undefined`) {
         getCk();
-    } else {
-        if (!CK_Val) throw new Error('❌请先获取Token🎉')
-        CryptoJS = await intCryptoJS();
-        await main();
     }
 })().catch((e) => $.messages.push(e.message || e) && $.logErr(e))
     .finally(async () => {
-        await sendMsg($.messages.join('\n').trimStart().trimEnd());// 推送通知
+       // await sendMsg($.messages.join('\n').trimStart().trimEnd());// 推送通知
         $.done();
     })
 
