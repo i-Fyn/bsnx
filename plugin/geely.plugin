@@ -15,7 +15,7 @@ pushplusToken = input,"default",tag=PUSH_PLUS_TOKEN,desc=填写需要通知的PU
 
 
 [Script]
-cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=吉利日常签到任务, argument=[{pushplusStatus,pushplusToken}]
+cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=吉利日常签到任务, argument=[{pushplusStatus},{pushplusToken}]
 http-response ^https?:\/\/app\.geely\.com\/api\/v2\/userCenter\/login\/.* script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js,requires-body=true, tag=获取Token
 
 
