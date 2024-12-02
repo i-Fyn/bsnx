@@ -12,20 +12,30 @@ $.messages = [];
 
 async function getCk() {
     if ($response && $request.method != 'OPTIONS') {
-	const response = $response.body;
+        const response = $response.body;
         if (response) {
             const ckVal = response;
-		if(typeof(ckVal) == "object"){
-		$.log("object")
+            if (typeof (ckVal) == "object") {
+                $.log("object")
                 $.log($.toStr(ckVal))
-		}else{
-                try{
-		$.log("string: "+ ckVal)
-                $.log($.toObj(ckVal))
-		}catch(e){}
-		}
-            //$.setdata(ckVal, _key); // 保存更新后的数据
-            //$.msg($.name, '获取ck成功🎉', ckVal);
+
+            } else {
+                try {
+                    $.log("string: " + ckVal)
+                    $.log($.toStr(ckVal))
+                } catch (e) { }
+            }
+            res = $.toObj(ckVal);
+            if (res.code  && res.code == "success"){
+            var token = res.data.token;
+            var refreshToken = res.data.refreshToken;
+            var txCookie = res.data.txCookie;
+            var mobile = res.data.ucMemberDto.ucMemberProfileDto.mobile;
+            var data = mobile + "@" + token + "@" + refreshToken + "@" + txCookie;
+            $.setdata(data, _key); 
+            $.msg($.name, '获取ck成功🎉', data);
+            }
+            
         } else {
             $.msg($.name, '', '❌获取ck失败');
         }
