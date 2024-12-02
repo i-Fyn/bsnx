@@ -16,7 +16,7 @@ http-request ^https?:\/\/app\.geely\.com\/gauth\/api\/owner\/dcs\/getCarList\? s
 hostname = app.geely.com
 ====================================
 # pushplusToken PUSH_PLUS_TOKEN=**********
-# 青龙环境变量  geely_val=token@devicesn
+# 青龙环境变量  geely_val=token@token@refreshToken@txCookie@devicesn
  */
 const tag="吉利汽车";
 const taskName="签到";
@@ -65,6 +65,26 @@ async function getCk() {
 }
 
 
+function getHeaders() {
+return {
+    'User-Agent': `GLMainProject/${$.appversion} (iPhone; iOS 18.2; Scale/3.00)`,
+    'Content-Type': 'application/json',
+    'txcookie': $.txCookie,
+    'gl_dev_name': 'iPhone',
+    'gl_dev_model': 'iPhone17,2',
+    'gl_dev_brand': 'Apple',
+    'appversion': $.appversion,
+    'gl_dev_id': $.devicesn,
+    'gl_os_version': '18.2',
+    'platform': 'iOS',
+    'token': $.token,
+    'gl_dev_platform': 'iOS',
+    'accept-language': 'zh-Hans-CN;q=1',
+    'devicesn': $.devicesn,
+    'gl_app_version': $.appversion,
+  }
+}
+
 
 
 async function main() {
@@ -82,7 +102,7 @@ async function main() {
 	pushMsg(l);
     var d = await readValFromLocal(mobile);
     [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] = d?.trim().split("@") || ckArr[index].trim().split("@");
-    $.log(`✅ 读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
+   // $.log(`✅ 读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
     if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
         await refresh_token();
 	}
@@ -98,22 +118,15 @@ async function main() {
 // 刷新token
 async function refresh_token() {
     url = `https://app.geely.com/api/v1/user/refresh?refreshToken=${$.refreshToken}`;
-    headers = headers = {
-        appVersion: $.appversion,
-        deviceSN: $.devicesn,
-        token: $.token ,
-        platform: "iOS",
-        "User-Agent": `GLMainProject/${$.appversion} (iPhone; iOS 17.6.1; Scale/2.00)`,
-    };
+    headers  = getHeaders();
     const rest = {url, headers}
     let {code, data, message} = await httpRequest(rest);
     if (code =='success') {
-        $.log($.toStr(data))
         $.token = data.token;
         $.refreshToken = data.refreshToken;
-        $.msg($.name, '', 'token刷新成功🎉');
-        $.log(`✅ token刷新成功：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
-        await writeValToLocal($.mobile+ "@" + $.token + "@" + $.refreshToken + "@" + $.txCookie + "@" + $.devicesn ,$.mobile)
+        pushMsg(`token刷新成功🎉`);
+        await writeValToLocal($.mobile+ "@" + $.token + "@" + $.refreshToken + "@" + $.txCookie + "@" + $.devicesn ,$.mobile);
+	await getMyCenterCounts();
         } else {
         $.msg($.name, '', 'token刷新失败❌'+$.toStr(data));
     }
@@ -157,16 +170,10 @@ async function signIn() {
         deviceUUID: $.devicesn,
         geelyDeviceId: $.devicesn
     }
-    headers = {
+    headers = Object.assign(getHeaders(), {
         "X-Data-Sign": sign,
-        appVersion: $.appversion,
-        deviceSN: $.devicesn,
-        sweet_security_info: $.toStr(sweet_security_info),
-        token: $.token,
-        platform: "iOS",
-        "User-Agent": `GLMainProject/${$.appversion} (iPhone; iOS 17.6.1; Scale/2.00)`,
-        "Content-Type": "application/json",
-    };
+        "sweet_security_info": $.toStr(sweet_security_info)
+    });
     const rest = {url, body, headers}
     let {code, data, message} = await httpRequest(rest);
     _msg += `签到：${message}`;//{"code":"fail","message":"您已签到,请勿重复操作!"}
@@ -179,10 +186,17 @@ async function getSignMsg() {
     const _Date = new Date();
     body = `{"year":"${_Date.getFullYear()}","month":"${_Date.getMonth() + 1}"}`;
     headers = {
-        token: $.token,
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/ios/geelyApp",
-    };
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/ios/geelyApp',
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'sec-fetch-site': 'same-origin',
+        'accept-language': 'zh-CN,zh-Hans;q=0.9',
+        'sec-fetch-mode': 'cors',
+        'token': $.token,
+        'origin': 'https://app.geely.com',
+        'referer': 'https://app.geely.com/app-h5/sign-in/?showTitleBar=0',
+        'sec-fetch-dest': 'empty',
+      };
     const rest = {url, body, headers}
     let {code, data, message} = await httpRequest(rest);
     let _msg;
@@ -192,37 +206,19 @@ async function getSignMsg() {
 //能力体
 async function summary() {
     url = `https://app.geely.com/api/v1/point/available`;
-    headers = {
-        appVersion: $.appversion,
-        deviceSN: $.devicesn,
-        token: $.token ,
-        platform: "iOS",
-        "User-Agent": `GLMainProject/${$.appversion} (iPhone; iOS 17.6.1; Scale/2.00)`,
-    };
+    headers = getHeaders();
     const rest = {url, headers};
     let {code, data, message} = await httpRequest(rest);
     let _msg;
     _msg = (code == 'success') ? `积分：${parseFloat(data?.availablePoint)}` : '';//parseFloat('2.00')
     pushMsg(_msg);
-
-
-
-
-
-
 }
 
 // 是否签到
 async function getMyCenterCounts() {
     try{
     url = `https://app.geely.com/my/getMyCenterCounts`;
-    headers = {
-        appVersion: $.appversion,
-        deviceSN: $.devicesn,
-        token: $.token ,
-        platform: "iOS",
-        "User-Agent": `GLMainProject/${$.appversion} (iPhone; iOS 17.6.1; Scale/2.00)`,
-    };
+    headers = getHeaders();
     const rest = {url, headers}
     let {code, data, message} = await httpRequest(rest);
     if (code == 'success') {
@@ -252,12 +248,6 @@ async function getMyCenterCounts() {
         await sendMsg($.messages.join('\n').trimStart().trimEnd());// 推送通知
         $.done();
     })
-
-
-
-
-
-
 
 //---------------------------------------------------------------------------------------------------
 function pushMsg(msg) {
