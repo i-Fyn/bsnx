@@ -82,6 +82,7 @@ async function main() {
         $.appversion = $.toObj((await $.http.get(`https://itunes.apple.com/cn/lookup?id=1518762715`))?.body)?.results[0]?.version;
         $.appversion = $.appversion ? $.appversion : "3.25.0";
         $.log(`最新版本号：${$.appversion}`);
+        $.log("通知参数:"+$argument?.pushplusStatus,$argument?.pushplusToken);
         let ckArr = await getCks(CK_Val);
         for (let index = 0; index < ckArr.length; index++) {
             const mobile = ckArr[index].trim().split("@")[0];
