@@ -23,7 +23,7 @@ async function getCk() {
                 try{
 		$.log("string: "+ ckVal)
                 $.log($.toStr(ckVal))
-		}catch(){}
+		}catch(e){}
 		}
             //$.setdata(ckVal, _key); // 保存更新后的数据
             //$.msg($.name, '获取ck成功🎉', ckVal);
