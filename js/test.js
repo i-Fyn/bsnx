@@ -11,7 +11,10 @@ $.is_debug ='true--';
 $.messages = [];
 
 async function getCk() {
-    if ($response && $request.method != 'OPTIONS') {
+	if($response || $request){
+	console.log($response)
+	console.log($request)
+	}
 	const response = $response.body;
         if (response) {
             const ckVal = response;
@@ -30,7 +33,6 @@ async function getCk() {
         } else {
             $.msg($.name, '', '❌获取ck失败');
         }
-    }
 }
 
 async function httpRequest(options) {
@@ -63,9 +65,7 @@ async function httpRequest(options) {
 
 // 脚本执行入口
 !(async () => {
-    if (typeof $request !== `undefined`) {
-        getCk();
-    }
+    getCk();
 })().catch((e) => $.messages.push(e.message || e) && $.logErr(e))
     .finally(async () => {
        // await sendMsg($.messages.join('\n').trimStart().trimEnd());// 推送通知
