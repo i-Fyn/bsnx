@@ -83,7 +83,9 @@ async function main() {
     var o = await readValFromLocal(mobile);
     $.log(typeof(o));
     $.log(o);
-    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =await readValFromLocal(mobile).trim().split("@") || ckArr[index].trim().split("@");
+    var d = await readValFromLocal(mobile);
+    $.log("lalala:"+d)
+    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =(await readValFromLocal(mobile))?.trim().split("@") || ckArr[index].trim().split("@");
     $.log(`读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
    // if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
     //    await refresh_token();
@@ -278,10 +280,10 @@ function getCks(t){return new Promise((resolve,reject)=>{let ckArr=[];if(t){if(t
 async function writeValToLocal(str,param){if($.isNode()){const fs=require('fs');if(!fs.existsSync(tag)){fs.mkdirSync(tag);console.log(`文件夹"${tag}"不存在，已创建成功。`)}fs.writeFileSync(tag+"/"+param+".txt",str);$.log("✅ "+tag+"/"+param+".txt: 个人数据保存成功")}else{setOrUpdateData(str);$.log("✅ "+_key+": 个人数据保存成功")}}
 
 //读取本地变量
-async function readValFromLocal(param){if($.isNode()){const fs=require('fs');if(!fs.existsSync(tag)){fs.mkdirSync(tag);console.log(`文件夹"${tag}"不存在，已创建成功。`)}if(!fs.existsSync(tag+"/"+param+".txt")){return false}else{return fs.readFileSync(tag+"/"+param+".txt","utf-8")}}else{var data=getLineByFirstParam(param);return data}}
+async function readValFromLocal(param){if($.isNode()){const fs=require('fs');if(!fs.existsSync(tag)){fs.mkdirSync(tag);console.log(`文件夹"${tag}"不存在，已创建成功。`)}if(!fs.existsSync(tag+"/"+param+".txt")){return false}else{$.log("got data by node local file～～");return fs.readFileSync(tag+"/"+param+".txt","utf-8")}}else{var data=getLineByFirstParam(param);return data}}
 
 //通过第一个参数获取环境变量
-function getLineByFirstParam(param){const existingData=$.getdata(_key);const lines=existingData.split("\n");for(let line of lines){if(line.startsWith(param)){return line}}return false}
+function getLineByFirstParam(param){const existingData=$.getdata(_key);const lines=existingData.split("\n");for(let line of lines){if(line.startsWith(param)){$.log("got data by ios local val～～");return line}}return false}
 
 //读取PUSH_PLUS_TOKEN
 function getPushPlusToken(){if($.isNode()){if(process.env.PUSH_PLUS_TOKEN){return process.env.PUSH_PLUS_TOKEN}else{return false}}else{if($.getdata("PUSH_PLUS_TOKEN")){return $.getdata("PUSH_PLUS_TOKEN")}else{return false}}}
