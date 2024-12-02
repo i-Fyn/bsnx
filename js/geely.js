@@ -28,23 +28,44 @@ const CK_Val = getEnv(_key)?.trim();
 $.is_debug ='true--';
 $.messages = [];
 
+
+
 async function getCk() {
-    if ($request && $request.method != 'OPTIONS') {
-        const url = $request.url;
-        const phone = url.match(/phone=(\d{11})/)?.[1];
+    if ($response && $request.method != 'OPTIONS') {
+        const response = $response.body;
         const head = ObjectKeys2LowerCase($request.headers);
-        const token = head['token'];
         const devicesn = head['devicesn'];
-        
-        if (token && devicesn && phone) {
-            const ckVal = phone + "@" + token + "@" + devicesn + "\n";
-            $.setdata(ckVal, _key); // 保存更新后的数据
-            $.msg($.name, '获取ck成功🎉', ckVal);
+        if (response) {
+            const ckVal = response;
+            if (typeof (ckVal) == "object") {
+                $.log("object")
+                $.log($.toStr(ckVal))
+
+            } else {
+                try {
+                    $.log("string: " + ckVal)
+                    $.log($.toStr(ckVal))
+                } catch (e) { }
+            }
+            res = $.toObj(ckVal);
+            if (res.code  && res.code == "success"){
+            var token = res.data.token;
+            var refreshToken = res.data.refreshToken;
+            var txCookie = res.data.txCookie;
+            var mobile = res.data.ucMemberDto.ucMemberProfileDto.mobile;
+            var data = mobile + "@" + token + "@" + refreshToken + "@" + txCookie + "@" + devicesn;
+            setOrUpdateData(data); 
+            $.msg($.name, '获取ck成功🎉', data);
+            }
+            
         } else {
             $.msg($.name, '', '❌获取ck失败');
         }
     }
 }
+
+
+
 
 async function main() {
     if (CK_Val) {
@@ -53,23 +74,52 @@ async function main() {
     $.log(`最新版本号：${$.appversion}`);
     let ckArr = await getCks(CK_Val);
     for (let index = 0; index < ckArr.length; index++) {
-	const [mobile,token, devicesn ]= ckArr[index].trim().split("@");
-        if (!mobile || !token || !devicesn) {
+	const [mobile,token, refreshToken, txCookie, devicesn ]= ckArr[index].trim().split("@");
+        if (!mobile || !token || !devicesn || !refreshToken || !txCookie) {
             $.msg($.name, ckArr[index], '❌❌App升级，请重新更新ck🎉🎉');
         }else{
-        var l = `========= [${mobile}]=========`;
+    var l = `========= [${mobile}]=========`;
 	pushMsg(l);
-	$.mobile = mobile;
-        $.token = token;
-        $.devicesn = devicesn;
-        await getMyCenterCounts();
+    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =await readValFromLocal(mobile) || ckArr[index].trim();
+    $.log(`读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
+    if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
+        await refresh_token();
 	}
-    
+}
 }
 	}else {
         $.msg($.name, '', '❌请先获取ck🎉');
     }
 }
+
+
+
+// 刷新token
+async function refresh_token() {
+    url = `https://app.geely.com/api/v1/user/refresh?refreshToken=${$.refreshToken}`;
+    headers = headers = {
+        appVersion: $.appversion,
+        deviceSN: $.devicesn,
+        token: $.token ,
+        platform: "iOS",
+        "User-Agent": `GLMainProject/${$.appversion} (iPhone; iOS 17.6.1; Scale/2.00)`,
+    };
+    const rest = {url, headers}
+    let {code, data, message} = await httpRequest(rest);
+    if (code =='success') {
+        $.log($.toStr(data))
+        $.token = data.token;
+        $.refreshToken = data.refreshToken;
+        $.msg($.name, '', 'token刷新成功🎉');
+        $.log(`token刷新成功：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
+        await writeValToLocal($.mobile+ "@" + $.token + "@" + $.refreshToken + "@" + $.txCookie + "@" + $.devicesn ,$.mobile)
+        } else {
+        $.msg($.name, '', 'token刷新失败❌');
+    }
+}
+
+
+
 
 // 签到
 async function signIn() {
@@ -154,6 +204,11 @@ async function summary() {
     _msg = (code == 'success') ? `积分：${parseFloat(data?.availablePoint)}` : '';//parseFloat('2.00')
     pushMsg(_msg);
 
+
+
+
+
+
 }
 
 // 是否签到
@@ -181,33 +236,6 @@ async function getMyCenterCounts() {
     }catch(e){
     }
 }
-async function httpRequest(options) {
-    try {
-        options = options.url ? options : { url: options };
-        const _method = options?._method || ('body' in options ? 'post' : 'get');
-        const _respType = options?._respType || 'body';
-        const _timeout = options?._timeout || 15e3;
-        const _http = [
-            new Promise((_, reject) => setTimeout(() => reject(`⛔️ 请求超时: ${options['url']}`), _timeout)),
-            new Promise((resolve, reject) => {
-                debug(options, '[Request]');
-                $[_method.toLowerCase()](options, (error, response, data) => {
-                    //debug(response, '[response]');
-                    debug(data, '[data]');
-                    error && $.log($.toStr(error));
-                    if (_respType !== 'all') {
-                        resolve($.toObj(response?.[_respType], response?.[_respType]));
-                    } else {
-                        resolve(response);
-                    }
-                })
-            })
-        ];
-        return await Promise.race(_http);
-    } catch (err) {
-        $.logErr(err);
-    }
-}
 
 // 脚本执行入口
 !(async () => {
@@ -224,149 +252,47 @@ async function httpRequest(options) {
         $.done();
     })
 
-//--------
+
+
+
+
+
+
+//---------------------------------------------------------------------------------------------------
 function pushMsg(msg) {
     $.messages.push(msg.trimEnd()), $.log(msg.trimEnd());
 }
+//请求函数
+async function httpRequest(options){try{options=options.url?options:{url:options};const _method=options?._method||('body'in options?'post':'get');const _respType=options?._respType||'body';const _timeout=options?._timeout||15e3;const _http=[new Promise((_,reject)=>setTimeout(()=>reject(`⛔️请求超时:${options['url']}`),_timeout)),new Promise((resolve,reject)=>{debug(options,'[Request]');$[_method.toLowerCase()](options,(error,response,data)=>{debug(data,'[data]');error&&$.log($.toStr(error));if(_respType!=='all'){resolve($.toObj(response?.[_respType],response?.[_respType]))}else{resolve(response)}})})];return await Promise.race(_http)}catch(err){$.logErr(err)}}
 
+//pushplus 推送通知
+async function pushplus(msg){var pushplusToken=getPushPlusToken();if(!pushplusToken){$.log("推送服务未启用，请先设置环境变量：PUSH_PLUS_TOKEN");return}const headers={"Content-Type":"application/json"};url="http://www.pushplus.plus/send";body={"token":pushplusToken,"title":tag,"content":msg,"temple":"html",};const rest={url,body,headers};let{code,data,message}=await httpRequest(rest);if(code==200){$.log(`推送成功`)}else{$.log(`推送失败:${message}`)}}
 
-
-
-async function pushplus(msg) {
-    var pushplusToken = getPushPlusToken();
-    if(!pushplusToken){
-        $.log(`推送服务未启用，请先设置环境变量：PUSH_PLUS_TOKEN`);
-        return;
-    }
-    const headers = {
-        "Content-Type": "application/json"
-    };
-    url = `http://www.pushplus.plus/send`;
-    body =  {
-        "token": pushplusToken,
-        "title": tag,
-        "content":msg,
-        "temple": "html"
-    };
-    const rest = {url,body ,headers};
-    let {code, data, message} = await httpRequest(rest);
-    if (code == 200) {
-        $.log(`推送成功`);
-    } else {
-        $.log(`推送失败:${message}`);
-    }
-
-}
-
-
-//多账号提取
-
-function getCks(t) {
-    return new Promise((resolve, reject) => {
-        let ckArr = [];
-        if (t) {
-            if (t.indexOf("\n") != -1) {
-                t.split("\n").forEach((item) => {
-                    ckArr.push(item);
-                });
-            } else {
-                ckArr.push(t);
-            }
-            resolve(ckArr);
-        } else {
-           $.log(`请填写变量:${_key}`);
-        }
-    })
-}
+//多账号array提取
+function getCks(t){return new Promise((resolve,reject)=>{let ckArr=[];if(t){if(t.indexOf("\n")!=-1){t.split("\n").forEach((item)=>{ckArr.push(item)})}else{ckArr.push(t)}resolve(ckArr)}else{$.log(`请填写变量:${_key}`)}})}
 
 //变量储存本地
-async function writeValToLocal(str){
-	if($.isNode()){
-		const fs = require('fs');
-		if (!fs.existsSync(tag)) {
-    // 如果文件夹不存在，创建它
-    fs.mkdirSync(tag);
-    console.log(`文件夹 "${tag}" 不存在，已创建成功。`);
-}
-		fs.writeFileSync(tag + "/" + $.mobile + ".txt",str);
-		$.log("✅ " +  tag + "/" + $.mobile + ".txt" + ": 个人数据保存成功");
-	}else{
-		$.setdata(str, _key+"_"+$.mobile);
-		$.log("✅ " +  _key+"_"+$.mobile + ": 个人数据保存成功");
-	}
-}
+async function writeValToLocal(str,param){if($.isNode()){const fs=require('fs');if(!fs.existsSync(tag)){fs.mkdirSync(tag);console.log(`文件夹"${tag}"不存在，已创建成功。`)}fs.writeFileSync(tag+"/"+param+".txt",str);$.log("✅ "+tag+"/"+param+".txt: 个人数据保存成功")}else{setOrUpdateData(str);$.log("✅ "+_key+": 个人数据保存成功")}}
 
 //读取本地变量
-async function readValFromLocal(){
-	if($.isNode()){
-		const fs = require('fs');
-		if (!fs.existsSync(tag + "/" + $.mobile + ".txt")) {
-			return false
-		}else{
-		return fs.readFileSync(tag + "/" + $.mobile + ".txt","utf-8");
-	 }
-	}else{
-		var data = $.getdata(_key+"_"+$.mobile);
-		var d = data? data:false;
-		return d
-	}
-}
+async function readValFromLocal(param){if($.isNode()){const fs=require('fs');if(!fs.existsSync(tag)){fs.mkdirSync(tag);console.log(`文件夹"${tag}"不存在，已创建成功。`)}if(!fs.existsSync(tag+"/"+param+".txt")){return false}else{return fs.readFileSync(tag+"/"+param+".txt","utf-8")}}else{var data=getLineByFirstParam(param);return data}}
 
+//通过第一个参数获取环境变量
+function getLineByFirstParam(param){const existingData=$.getdata(_key);const lines=existingData.split("\n");for(let line of lines){if(line.startsWith(param)){return line}}return false}
 
-//读取pushplus Token
-function getPushPlusToken(){
-	if($.isNode()){
-        if(process.env.PUSH_PLUS_TOKEN){
-            return process.env.PUSH_PLUS_TOKEN;
-        }else{
-            return false;
-        }
-	}else{
-        if($.getdata("PUSH_PLUS_TOKEN")){
-            return $.getdata("PUSH_PLUS_TOKEN");
-        }else{
-            return false;
-        }
-	}
-	}
-
-
+//读取PUSH_PLUS_TOKEN
+function getPushPlusToken(){if($.isNode()){if(process.env.PUSH_PLUS_TOKEN){return process.env.PUSH_PLUS_TOKEN}else{return false}}else{if($.getdata("PUSH_PLUS_TOKEN")){return $.getdata("PUSH_PLUS_TOKEN")}else{return false}}}
 
 //加载 crypto-js
-async function intCryptoJS() {
-    function Eval_Crypto(script_str) {
-        const evalFunc = $.isNode() ? global.eval : eval;
-        evalFunc(script_str);
-        return $.isNode() ? global.CryptoJS : CryptoJS;
-    }
-    if($.is_debug !== 'true'){//调试模式默认从网络读取js脚本
-        let script_str = ($.isNode() ? require("crypto-js") : $.getdata("cryptojs_Script")) || "";
-        if ($.isNode()) {
-            $.log("✅ " + $.name + ": node环境，默认使用crypto-js模块");
-            return script_str;
-        }
-        if (script_str && Object.keys(script_str).length) {
-            $.log("✅ " + $.name + ": 缓存中存在CryptoJS代码, 跳过下载");
-            return Eval_Crypto(script_str)
-        }
-    }
-    $.log("🚀 " + "开始下载CryptoJS代码");
-    // const script_str = (await $.http.get('http://192.168.2.170:8080/crypto-js.min.js')).body;
-    // Eval_Crypto(script_str);
-    return new Promise(async resolve => {
-        $.getScript('http://ys-l.ysepan.com/551976330/420094417/k5G4J73367NKLlPfoiL4c/crypto-js.min.js').then(script_str => {
-            $.setdata(script_str, "cryptojs_Script");
-            Eval_Crypto(script_str)
-            $.log("✅ CryptoJS加载成功");
-            resolve(CryptoJS);
-        });
-    });
-}
+async function intCryptoJS(){function Eval_Crypto(script_str){const evalFunc=$.isNode()?global.eval:eval;evalFunc(script_str);return $.isNode()?global.CryptoJS:CryptoJS}if($.is_debug!=='true'){let script_str=($.isNode()?require("crypto-js"):$.getdata("cryptojs_Script"))||"";if($.isNode()){$.log("✅ "+$.name+": node环境，默认使用crypto-js模块");return script_str}if(script_str&&Object.keys(script_str).length){$.log("✅ "+$.name+": 缓存中存在CryptoJS代码, 跳过下载");return Eval_Crypto(script_str)}}$.log("🚀 开始下载CryptoJS代码");return new Promise(async resolve=>{$.getScript('http://ys-l.ysepan.com/551976330/420094417/k5G4J73367NKLlPfoiL4c/crypto-js.min.js').then(script_str=>{$.setdata(script_str,"cryptojs_Script");Eval_Crypto(script_str);$.log("✅ CryptoJS加载成功");resolve(CryptoJS)})})}
 
-
+//json转字符串query
 function jsonToQueryString(t = {}) {
     return Object.keys(t).sort().map(e => `${encodeURIComponent(e)}=${encodeURIComponent(t[e])}`).join("&");
 }
+
+// 更新数据函数
+function setOrUpdateData(str){let existingData=$.getdata(_key)||"";let lines=existingData.split("\n");let found=false;for(let i=0;i<lines.length;i++){if(lines[i].startsWith(str.split("@")[0])){lines[i]=str;found=true;break}}if(!found){lines.push(str)}const updatedData=lines.filter(Boolean).join("\n");$.setdata(updatedData,_key)}
 
 //DEBUG
 function debug(content,title="debug"){let start=`\n-----${title}-----\n`;let end=`\n-----${$.time('HH:mm:ss')}-----\n`;if($.is_debug==='true'){if(typeof content=="string"){$.log(start+content+end);}else if(typeof content=="object"){$.log(start+$.toStr(content)+end);}}};
