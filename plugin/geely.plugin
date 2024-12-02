@@ -1,5 +1,5 @@
 #!name=GEELY每日签到任务
-#!desc=定时任务及Token获取,支持多帐号,支持青龙面板,Loon安装插件并启用,进入吉利APP重新登录,最后进入数据持久化,读取指定数据 geely_val 亦或者查看日志
+#!desc=定时任务及Token获取,支持多帐号,支持青龙面板,Loon安装插件并启用,进入吉利APP重新登录,最后进入数据持久化,读取指定数据 geely_val 亦或者查看日志,如果启用pushplus请导入指定数据 PUSH_PLUS_TOKEN
 #!author= iFyn[https://github.com/i-Fyn]
 #!homepage= https://github.com/i-Fyn/bsnx
 #!icon=https://raw.githubusercontent.com/i-Fyn/bsnx/main/icon/IMG_4048.webp
