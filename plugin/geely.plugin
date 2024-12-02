@@ -1,5 +1,5 @@
 #!name=GEELY每日签到任务
-#!desc=定时任务及Token获取,支持多帐号,支持青龙面板,Loon安装插件并启用,进入吉利APP重新登录,最后进入数据持久化,读取指定数据 geely_val 亦或者查看日志,如果启用pushplus请导入指定数据 PUSH_PLUS_TOKEN
+#!desc=定时任务及Token获取,支持多帐号,支持青龙面板,Loon安装插件并启用,进入吉利APP重新登录,最后进入数据持久化,读取指定数据 geely_val 亦或者查看日志
 #!author= iFyn[https://github.com/i-Fyn]
 #!homepage= https://github.com/i-Fyn/bsnx
 #!icon=https://raw.githubusercontent.com/i-Fyn/bsnx/main/icon/IMG_4048.webp
@@ -11,10 +11,11 @@
 
 [Argument]
 pushplusStatus = switch,false,tag=启用pushplus通知,desc=是否启用通知
+pushplusToken = input,"",tag=PUSH_PLUS_TOKEN,desc=填写需要通知的PUSH_PLUS_TOKEN
 
 
 [Script]
-cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=吉利日常签到任务, argument=[{pushplusStatus}]
+cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js, tag=吉利日常签到任务, argument=[{pushplusStatus,pushplusToken}]
 http-response ^https?:\/\/app\.geely\.com\/api\/v2\/userCenter\/login\/.* script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/geely.js,requires-body=true, tag=获取Token
 
 
