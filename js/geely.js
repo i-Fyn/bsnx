@@ -83,7 +83,7 @@ async function main() {
     var o = await readValFromLocal(mobile);
     $.log(typeof(o));
     $.log(o);
-    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =await readValFromLocal(mobile).trim().split("@) || ckArr[index].trim().split("@");
+    [$.mobile, $.token, $.refreshToken, $.txCookie, $.devicesn] =await readValFromLocal(mobile).trim().split("@") || ckArr[index].trim().split("@");
     $.log(`读取ck：${$.mobile} ${$.token} ${$.refreshToken} ${$.txCookie} ${$.devicesn}`);
    // if ($.mobile && $.token && $.refreshToken && $.txCookie && $.devicesn) {
     //    await refresh_token();
