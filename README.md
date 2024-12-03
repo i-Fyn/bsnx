@@ -14,3 +14,4 @@
 | 类型       | 序号 | 名称            |
 |------------|------|-----------------|
 |  签到任务  | 1    | [吉利签到任务](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/i-Fyn/bsnx/main/plugin/geely.plugin) |
+|  定时查询  | 1    | [守株逮兔贪恐定时查询](https://www.nsloon.com/openloon/import?plugin=https://raw.githubusercontent.com/i-Fyn/bsnx/main/plugin/FearandGreedIndexCheck.plugin) |
