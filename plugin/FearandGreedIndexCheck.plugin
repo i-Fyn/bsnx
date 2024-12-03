@@ -13,7 +13,7 @@ checkStatus = switch,false,tag=启用查询,desc=是否启用查询
 checkToken = input,"default",tag=VIP激活码,desc=填写查询VIP码
 stockTicker = input,"default",tag=股票代码,desc=查询股票代码，多个用英语逗号,来间隔
 leverageRatio = input,"default",tag=杠杆倍数,desc=股票杠杆倍数
-tkPoint = input,"default",tag=贪恐指数,desc=触发通知的贪恐指数
+tkPoint = input,"default",tag=贪恐指数,desc=触发通知的贪恐指数,格式-40,40
 pushplusStatus = switch,false,tag=PUSHPLUS,desc=是否启用通知
 pushplusToken = input,"default",tag=PUSH_PLUS_TOKEN,desc=填写需要通知的PUSH_PLUS_TOKEN
 
