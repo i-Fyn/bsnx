@@ -14,7 +14,14 @@ const _key = 'tkcx_val';
 const CK_Val = getEnv(_key)?.trim();
 $.is_debug = 'true--';
 $.messages = [];
-
+$.qlArgument = {
+    "checkToken": "",
+    "stockTicker": "",
+    "leverageRatio": "",
+    "tkPoint": "",
+    "pushplusStatus": false,
+    "pushplusToken": ""
+}
 
 
 async function getCk() {
@@ -54,6 +61,14 @@ async function getCk() {
 
 
 async function main() {
+    if ($.isNode()){
+        if($.qlArgument && $.qlArgument.checkToken !== "" && $.qlArgument.stockTicker !== "" && $.qlArgument.leverageRatio !== "" && $.qlArgument.tkPoint !== ""){
+            $argument = $.qlArgument;
+        }else{
+            $.log("node环境,请传入参数");
+            return;
+        }
+    }
     if(!$argument){
         $.log("请传入参数");
         return;
