@@ -1,0 +1,29 @@
+#!name=贪恐指数查询
+#!desc=定时查询任务 pushplus推送 
+#!author= iFyn[https://github.com/i-Fyn]
+#!homepage= https://github.com/i-Fyn/bsnx
+#!category= MK
+#!tag = 实时查询
+#!system=iOS,iPadOS
+#!loon_version=3.2.4(787)
+#!date=2024-12-03 00:00:00
+
+[Argument]
+checkStatus = switch,false,tag=启用查询任务,desc=是否启用查询
+checkToken = input,"default",tag=VIPCODE,desc=填写查询VIP码
+stockTicker = input,"default",tag=股票代码,desc=查询股票代码，多个用英语逗号,来间隔
+leverageRatio = input,"default",tag=杠杆倍数,desc=股票杠杆倍数
+tkPoint = input,"default",tag=贪恐指数,desc=触发通知的贪恐指数
+pushplusStatus = switch,false,tag=PUSHPLUS,desc=是否启用通知
+pushplusToken = input,"default",tag=PUSH_PLUS_TOKEN,desc=填写需要通知的PUSH_PLUS_TOKEN
+
+
+[Script]
+cron "30 7 * * *" script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/FearandGreedIndexCheck.js, tag=实时查询, enable={checkStatus},argument=[{leverageRatio},{tkPoint},{stockTicker},{checkToken},{pushplusStatus},{pushplusToken}]
+cron "30,48 22 * * *"  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/FearandGreedIndexCheck.js, tag=实时查询, enable={checkStatus},argument=[{leverageRatio},{tkPoint},{stockTicker},{checkToken},{pushplusStatus},{pushplusToken}]
+cron "6,24,42 23 * * *"  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/FearandGreedIndexCheck.js, tag=实时查询, enable={checkStatus},argument=[{leverageRatio},{tkPoint},{stockTicker},{checkToken},{pushplusStatus},{pushplusToken}]
+cron "0,18,36,54 0-4 * * *"  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/FearandGreedIndexCheck.js, tag=实时查询, enable={checkStatus},argument=[{leverageRatio},{tkPoint},{stockTicker},{checkToken},{pushplusStatus},{pushplusToken}]
+
+
+[MITM]
+hostname = szdt.tech
