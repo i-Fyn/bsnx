@@ -79,7 +79,7 @@ async function main() {
     $.sendStatus = false;
     $.tkPointMin=$argument?.tkPoint.split(",")[0]*1;
     $.tkPointMax=$argument?.tkPoint.split(",")[1]*1;
-    $.tableHeader = "| 股票代码 |      名称      | 贪恐指数 | 价格 |\n|----------|------|----------|------|";
+    $.tableHeader = "| 股票代码 |       名称       | 贪恐指数 | 价格 |\n|--------|-------------|------|------|";
     $.tableRows = "";
     for (let index = 0; index < $.stockTickerList.length; index++) {
         $.stockTicker = $.stockTickerList[index];
