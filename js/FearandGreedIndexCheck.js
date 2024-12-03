@@ -89,13 +89,13 @@ async function main() {
     $.tableRows = "";
     for (let index = 0; index < $.stockTickerList.length; index++) {
         $.stockTicker = $.stockTickerList[index];
-        $.log("查询========================="+$.stockTicker);
+        $.log("============"+$.stockTicker+"============");
         await scan();
     }
     const markdownTable = `${$.tableHeader}${$.tableRows}
 </table>`;
 
-    $.log(markdownTable);
+   // $.log(markdownTable);
     if ($.sendStatus) {
         await pushplusTable(markdownTable);
     }
