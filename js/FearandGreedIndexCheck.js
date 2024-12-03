@@ -102,15 +102,16 @@ async function scan() {
     try {
     url = `https://szdt.tech/api/partner/invest/stock/scan`;
     headers = {
-        'Content-Type': 'application/json',
-        "X-Auth":$argument?.checkToken
+        'Content-Type': 'application/x-www-form-urlencoded',
+        "X-Auth":$argument.checkToken
     };
     data = {
         "code": $.stockTicker,
-        "lever": $argument?.leverageRatio,
+        "lever": $argument.leverageRatio,
         "emo_area": "us"
     };
-    const rest = { url, headers }
+    data = jsonToQueryString(data);
+    const rest = { url,data, headers }
     let { status, data, msg } = await httpRequest(rest);
     if (status == 1) {
         let { query, query_api, name, price, score, time } = data;
@@ -122,7 +123,7 @@ async function scan() {
         console.log("查询接口数量:"+ query);
         console.log("查询次数:"+ query_api);
         console.log("剩余查询次数:"+ (5000 - query_api));
-        if(score >= $.tkPointMax || score <= $.tkPointMin){
+        if(score >$.tkPointMax || score <$.tkPointMin){
             $.sendStatus = true;
         }
         const row = `| ${$.stockTicker} | ${name} | ${score} | ${price} |`;
