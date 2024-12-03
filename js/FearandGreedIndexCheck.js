@@ -54,6 +54,10 @@ async function getCk() {
 
 
 async function main() {
+    if(!$argument){
+        $.log("请传入参数");
+        return;
+    }
     if($argument?.checkToken =="default"){
         $.log("请传入VIP激活码");
         return;
