@@ -105,13 +105,13 @@ async function scan() {
         'Content-Type': 'application/x-www-form-urlencoded',
         "X-Auth":$argument.checkToken
     };
-    data = {
+    body = {
         "code": $.stockTicker,
         "lever": $argument.leverageRatio,
         "emo_area": "us"
     };
-    data = jsonToQueryString(data);
-    const rest = { url,data, headers }
+    body = jsonToQueryString(body);
+    const rest = { url,body, headers }
     let { status, data, msg } = await httpRequest(rest);
     if (status == 1) {
         let { query, query_api, name, price, score, time } = data;
