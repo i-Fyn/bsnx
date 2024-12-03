@@ -79,7 +79,7 @@ async function main() {
     $.sendStatus = false;
     $.tkPointMin=$argument?.tkPoint.split(",")[0]*1;
     $.tkPointMax=$argument?.tkPoint.split(",")[1]*1;
-    $.tableHeader = `<table style="position: absolute;top:100; width: 90%;left: 50%; transform: translateX(-50%);  text-align: center; border: 1px solid black;">
+    $.tableHeader = `<table style="position: absolute;top:20px; width: 90%;left: 50%; transform: translateX(-50%);  text-align: center; border: 1px solid black;">
   <tr>
     <th>股票代码</th>
     <th>名称</th>
