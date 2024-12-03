@@ -23,6 +23,3 @@ cron "30,48 22 * * *"  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/
 cron "6,24,42 23 * * *"  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/FearandGreedIndexCheck.js, tag=实时查询, enable={checkStatus},argument=[{leverageRatio},{tkPoint},{stockTicker},{checkToken},{pushplusStatus},{pushplusToken}]
 cron "0,18,36,54 0-4 * * *"  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/FearandGreedIndexCheck.js, tag=实时查询, enable={checkStatus},argument=[{leverageRatio},{tkPoint},{stockTicker},{checkToken},{pushplusStatus},{pushplusToken}]
 
-
-[MITM]
-hostname = szdt.tech
