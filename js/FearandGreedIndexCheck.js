@@ -122,7 +122,7 @@ async function scan() {
         console.log("查询接口数量:"+ query);
         console.log("查询次数:"+ query_api);
         console.log("剩余查询次数:"+ (5000 - query_api));
-        if(score >$.tkPointMax || score <$.tkPointMin){
+        if(score >= $.tkPointMax || score <= $.tkPointMin){
             $.sendStatus = true;
         }
         const row = `| ${$.stockTicker} | ${name} | ${score} | ${price} |`;
