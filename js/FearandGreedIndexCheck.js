@@ -79,14 +79,22 @@ async function main() {
     $.sendStatus = false;
     $.tkPointMin=$argument?.tkPoint.split(",")[0]*1;
     $.tkPointMax=$argument?.tkPoint.split(",")[1]*1;
-    $.tableHeader = "| 股票代码 |       名称       | 贪恐指数 | 价格 |\n| ------ |------------------| ------ | ---- |";
+    $.tableHeader = `<table style="position: absolute;top:100; width: 90%;left: 50%; transform: translateX(-50%);  text-align: center; border: 1px solid black;">
+  <tr>
+    <th>股票代码</th>
+    <th>名称</th>
+    <th>贪恐指数</th>
+    <th>价格</th>
+  </tr>`;
     $.tableRows = "";
     for (let index = 0; index < $.stockTickerList.length; index++) {
         $.stockTicker = $.stockTickerList[index];
         $.log("查询========================="+$.stockTicker);
         await scan();
     }
-    const markdownTable = `${$.tableHeader}${$.tableRows}`;
+    const markdownTable = `${$.tableHeader}${$.tableRows}
+</table>`;
+
     $.log(markdownTable);
     if ($.sendStatus) {
         await pushplusTable(markdownTable);
@@ -126,7 +134,12 @@ async function scan() {
         if(score >$.tkPointMax || score <$.tkPointMin){
             $.sendStatus = true;
         }
-        const row = `| ${$.stockTicker} | ${name} | ${score} | ${price} |`;
+        const row = `<tr>
+    <td>${$.stockTicker}</td>
+    <td>${name}</td>
+    <td>${score}</td>
+    <td>${price}</td>
+  </tr>`;
         $.tableRows += `\n${row}`;
     }
 }catch (error) {
@@ -149,7 +162,7 @@ async function pushplusTable(msg) {
 		"token": pushplusToken,
 		"title": tag,
 		"content": msg,
-		"temple": "markdown",
+		"temple": "html",
 	};
 	const rest = {url,body,headers};
 	let {code,data,message} = await httpRequest(rest);
