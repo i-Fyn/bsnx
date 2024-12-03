@@ -14,13 +14,14 @@ const _key = 'tkcx_val';
 const CK_Val = getEnv(_key)?.trim();
 $.is_debug = 'true--';
 $.messages = [];
+//node环境变量，其他环境不用管
 $.qlArgument = {
-    "checkToken": "",
-    "stockTicker": "",
-    "leverageRatio": "",
-    "tkPoint": "",
-    "pushplusStatus": false,
-    "pushplusToken": ""
+    "checkToken": "",/* VIP激活码 */
+    "stockTicker": "",/* 股票代码,多个用,连接 */
+    "leverageRatio": "",/* 杠杆倍率 */
+    "tkPoint": "",/* 贪恐值 格式-40,40 */
+    "pushplusStatus": false ,/* 是否通知 */
+    "pushplusToken": "",/* pushplustoken */
 }
 
 
@@ -173,12 +174,12 @@ async function pushplusTable(msg) {
 		"Content-Type": "application/json"
 	};
 	url = "http://www.pushplus.plus/send";
-	body = {
+	body = JSON.stringify({
 		"token": pushplusToken,
 		"title": tag,
 		"content": msg,
-		"temple": "html",
-	};
+		"template": "html",
+	});
 	const rest = {url,body,headers};
 	let {code,data,message} = await httpRequest(rest);
 	if (code == 200) {
@@ -211,7 +212,7 @@ function pushMsg(msg) {
 async function httpRequest(options) { try { options = options.url ? options : { url: options }; const _method = options?._method || ('body' in options ? 'post' : 'get'); const _respType = options?._respType || 'body'; const _timeout = options?._timeout || 15e3; const _http = [new Promise((_, reject) => setTimeout(() => reject(`⛔️请求超时:${options['url']}`), _timeout)), new Promise((resolve, reject) => { debug(options, '[Request]'); $[_method.toLowerCase()](options, (error, response, data) => { debug(data, '[data]'); error && $.log($.toStr(error)); if (_respType !== 'all') { resolve($.toObj(response?.[_respType], response?.[_respType])) } else { resolve(response) } }) })]; return await Promise.race(_http) } catch (err) { $.logErr(err) } }
 
 //pushplus 推送通知
-async function pushplus(msg) { var pushplusToken = getPushPlusToken(); if (!pushplusToken) { $.log("推送服务未启用/未填写环境变量：PUSH_PLUS_TOKEN"); return } const headers = { "Content-Type": "application/json" }; url = "http://www.pushplus.plus/send"; body = { "token": pushplusToken, "title": tag, "content": msg, "temple": "html", }; const rest = { url, body, headers }; let { code, data, message } = await httpRequest(rest); if (code == 200) { $.log(`推送成功`) } else { $.log(`推送失败:${message}`) } }
+async function pushplus(msg) { var pushplusToken = getPushPlusToken(); if (!pushplusToken) { $.log("推送服务未启用/未填写环境变量：PUSH_PLUS_TOKEN"); return } const headers = { "Content-Type": "application/json" }; url = "http://www.pushplus.plus/send"; body = { "token": pushplusToken, "title": tag, "content": msg, "template": "html", }; const rest = { url, body, headers }; let { code, data, message } = await httpRequest(rest); if (code == 200) { $.log(`推送成功`) } else { $.log(`推送失败:${message}`) } }
 
 //多账号array提取
 function getCks(t) { return new Promise((resolve, reject) => { let ckArr = []; if (t) { if (t.indexOf("\n") != -1) { t.split("\n").forEach((item) => { ckArr.push(item) }) } else { ckArr.push(t) } resolve(ckArr) } else { $.log(`请填写变量:${_key}`) } }) }
