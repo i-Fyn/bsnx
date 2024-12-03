@@ -77,8 +77,8 @@ async function main() {
     $.log("通知参数:"+$argument?.pushplusStatus,$argument?.pushplusToken);
     $.stockTickerList=$argument?.stockTicker.split(",");
     $.sendStatus = false;
-    $.tkPointMin=$argument?.tkPoint.split(",")[0];
-    $.tkPointMax=$argument?.tkPoint.split(",")[1];
+    $.tkPointMin=$argument?.tkPoint.split(",")[0]*1;
+    $.tkPointMax=$argument?.tkPoint.split(",")[1]*1;
     $.tableHeader = "| 股票代码 | 名称 | 贪恐指数 | 价格 |\n|----------|------|----------|------|";
     $.tableRows = "";
     for (let index = 0; index < $.stockTickerList.length; index++) {
