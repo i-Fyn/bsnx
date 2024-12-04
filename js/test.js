@@ -26,7 +26,7 @@ if ($request && $request.method != 'OPTIONS') {
 
     } else if (url.includes("mtop.taobao.idlehome.home.nextfresh")  ) {
         if ($argument['mtop.taobao.idlehome.home.nextfresh']) {
-            obj = new Array();
+            obj = {}
         }
 
     } else if (url.includes("mtop.taobao.idle.user.strategy.list")) {
