@@ -6,7 +6,7 @@ let obj = JSON.parse($response.body);
 if ($request && $request.method != 'OPTIONS') {
 	//首页圈子标签
 	if (url.includes("mtop.taobao.idlehome.home.circle.list")){
-		if (obj ? .data ? .circleList ? .length > 0) {
+		if (obj?.data?.circleList?.length > 0) {
 		var newLists = new Array();
 		for (let list of obj.data.circleList) {
 			if (list.showType) {
@@ -15,7 +15,7 @@ if ($request && $request.method != 'OPTIONS') {
 			if (list.showInfo.titleImage) {
 				delete list.showInfo.titleImage;
 			}
-			if ($argument["mtop.taobao.idlehome.home.circle.list"] ? .includes(list.showInfo.title)) {
+			if ($argument["mtop.taobao.idlehome.home.circle.list"]?.includes(list.showInfo.title)) {
 				newLists.push(list);
 			} else {
 				delete list;
