@@ -7,9 +7,13 @@
 #^https?:\/\/app\.geely\.com\/api\/v2\/userCenter\/login\/.*
 #^https?:\/\/app\.geely\.com\/gauth\/api\/owner\/dcs\/getCarList\?
 #^https?:\/\/acs\.m\.goofish\.com\/gw\/.*
-[Script]
 
+[Argument]
+mtop.taobao.idlehome.home.circle.list = input,"关注,推荐,新发,玩机,热点,玩车,电脑控,手机党,出去野,二次元,运动,玩摄影,Apple,谷圈,玩影音,游戏圈,城市玩乐,鱼乐圈,萌宠,潮奢",tag=首页圈子标签自定义,desc=英文逗号分隔
+
+
+[Script]
 http-response https?:\/\/acs\.m\.goofish\.com\/gw\/.*  script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/test.js,requires-body=true, tag=获取response-body
 
 [MITM]
-hostname = app.geely.com
+hostname = acs.m.goofish.com
