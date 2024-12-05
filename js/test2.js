@@ -34,15 +34,15 @@ if(head.sweet_security_info){
 head.sweet_security_info = modifyJsonString(head.sweet_security_info, $argument.uuid);
 }
 
-if(url == "https://geely-user-api.geely.com/api/v1/device/bind"){
-console.log($argument.device,$argument.uuid);
-if($argument.device && $argument.device.length == 32){
-obj = JSON.parse(body);
-obj.device = $argument.device;
-$done({ headers: head,body: JSON.stringify(obj) });
-return
-}
-}
+// if(url == "https://geely-user-api.geely.com/api/v1/device/bind"){
+// console.log($argument.device,$argument.uuid);
+// if($argument.device && $argument.device.length == 32){
+// obj = JSON.parse(body);
+// obj.device = $argument.device;
+// $done({ headers: head,body: JSON.stringify(obj) });
+// return
+// }
+// }
 
 
 
