@@ -2,6 +2,7 @@
 const url = $request.url;
 if (!$request.headers) $done({});
 let head = $request.headers;
+let body = $request.body;
 
 function modifyJsonString(jsonString, newUUID) {
     // 替换 deviceUUID 和 geelyDeviceId
@@ -33,7 +34,14 @@ if(head.sweet_security_info){
 head.sweet_security_info = modifyJsonString(head.sweet_security_info, $argument.uuid);
 }
 
-
+if(url == "https://geely-user-api.geely.com/api/v1/device/bind"){
+if($argument.device && $argument.device.length == 32){
+body = JSON.parse(body);
+body.device = $argument.device;
+$done({ headers: head,body:body });
+return
+}
+}
 
 
 
