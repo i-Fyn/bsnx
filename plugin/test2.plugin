@@ -12,12 +12,12 @@
 
 [Argument]
 uuid = input,"",tag=deviceId,desc=
-
+device = input,"",tag=device,desc=
 
 
 [Script]
 http-request ^https:\/\/app\.geely\.com\/.* script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/test2.js, tag=修改请求头1,argument=[{uuid}]
-http-request ^https:\/\/geely-user-api.geely\.com\/.* script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/test2.js, tag=修改请求头2,argument=[{uuid}]
+http-request ^https:\/\/geely-user-api.geely\.com\/.* script-path=https://raw.githubusercontent.com/i-Fyn/bsnx/main/js/test2.js,requires-body = true, tag=修改请求头2,argument=[{uuid},{device}]
 
 
 [MITM]
