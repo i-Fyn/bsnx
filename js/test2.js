@@ -35,10 +35,11 @@ head.sweet_security_info = modifyJsonString(head.sweet_security_info, $argument.
 }
 
 if(url == "https://geely-user-api.geely.com/api/v1/device/bind"){
+console.log($argument.device,$argument.uuid);
 if($argument.device && $argument.device.length == 32){
-body = JSON.parse(body);
-body.device = $argument.device;
-$done({ headers: head,body:body });
+obj = JSON.parse(body);
+obj.device = $argument.device;
+$done({ headers: head,body: JSON.stringify(obj) });
 return
 }
 }
