@@ -130,14 +130,14 @@ async function signIn() {
     body = `{"signDate":"${time}","ts":"${ts}","cId":"BLqo2nmmoPgGuJtFDWlUjRI2b1b"}`;
     sign = `cId=BLqo2nmmoPgGuJtFDWlUjRI2b1b&signDate=${ts * 1000}&ts=${ts}0]3K@'9MK+6Jf`
     sign = CryptoJS.MD5(sign).toString();
-    sweet_security_info = {
-        appVersion: $.appversion,
-        deviceUUID: $.devicesn,
-        geelyDeviceId: $.devicesn
-    }
+    // sweet_security_info = {
+    //     appVersion: $.appversion,
+    //     deviceUUID: $.devicesn,
+    //     geelyDeviceId: $.devicesn
+    // }
     headers = Object.assign(getHeaders(), {
         "X-Data-Sign": sign,
-        "sweet_security_info": $.toStr(sweet_security_info)
+        "sweet_security_info": `{"osVersion":"18.2","geelyDeviceId":"${$.devicesn}","deviceUUID":"${$.devicesn}","brand":"Apple","appVersion":"${$.appversion}","channel":"ios%E5%AE%98%E6%96%B9","ua":"Mozilla\/5.0 (iPhone; CPU iPhone OS 18_2 like Mac OS X) AppleWebKit\/605.1.15 (KHTML, like Gecko) Mobile\/15E148","isSetProxy":"false","isUsingVpn":"false","os":"iOS","isLBSEnabled":"false","platform":"ios","isJailbreak":"false","networkType":"none","battery":"80","os_version":"18.2","isCharging":"2","model":"iPhone17,2","screenResolution":"1290 * 2796"}`
     });
     const rest = { url, body, headers }
     let { code, data, message } = await httpRequest(rest);
