@@ -3,7 +3,14 @@ const url = $request.url;
 if (!$request.headers) $done({});
 let head = $request.headers;
 
-
+function modifyJsonString(jsonString, newUUID) {
+    // 替换 deviceUUID 和 geelyDeviceId
+    jsonString = jsonString.replace(/"deviceUUID":"[0-9A-Fa-f-]{36}"/g, `"deviceUUID":"${newUUID}"`);
+    jsonString = jsonString.replace(/"geelyDeviceId":"[0-9A-Fa-f-]{36}"/g, `"geelyDeviceId":"${newUUID}"`);
+    // 替换所有 true 为 false
+    jsonString = jsonString.replace(/"true"/g, `"false"`);
+    return jsonString;
+}
 function isUUIDUpperCase(str) {
     const uuidRegex = /^[0-9A-F]{8}-[0-9A-F]{4}-[1-5][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/;
     return uuidRegex.test(str);
@@ -23,7 +30,11 @@ head.gl_dev_id =  $argument.uuid;
 }
 
 if(head.sweet_security_info){
-head.sweet_security_info = `{"osVersion":"18.2","ip":"192.168.2.1","geelyDeviceId":"${$argument.uuid}","deviceUUID":"${$argument.uuid}","brand":"Apple","appVersion":"${head.appversion}","channel":"ios%E5%AE%98%E6%96%B9","ua":"Mozilla\\/5.0 (iPhone; CPU iPhone OS 18_2 like Mac OS X) AppleWebKit\\/605.1.15 (KHTML, like Gecko) Mobile\\/15E148","isSetProxy":"false","isUsingVpn":"false","os":"iOS","isLBSEnabled":"false","platform":"ios","isJailbreak":"false","networkType":"NETWORK_WIFI","battery":"80","os_version":"18.2","isCharging":"2","model":"iPhone17,2","screenResolution":"1290 * 2796"}`;
+head.sweet_security_info = modifyJsonString(head.sweet_security_info, $argument.uuid);
 }
+
+
+
+
 
 $done({ headers: head });
