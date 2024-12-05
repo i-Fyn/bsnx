@@ -4,6 +4,16 @@ if (!$request.headers) $done({});
 let head = $request.headers;
 
 
+function isUUIDUpperCase(str) {
+    const uuidRegex = /^[0-9A-F]{8}-[0-9A-F]{4}-[1-5][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/;
+    return uuidRegex.test(str);
+}
+
+if(!$argument?.uuid || !isUUIDUpperCase($argument.uuid)){
+  console.log("请填写deviceId")
+  return
+}
+
 if(head.devicesn){
 head.devicesn =  $argument.uuid;
 }
